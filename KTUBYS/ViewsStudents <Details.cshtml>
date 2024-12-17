@@ -1,0 +1,19 @@
+namespace KTUBYS.ViewsStudents
+{
+    public class Details
+    {
+        @model Student  <!-- Bu, view'a gönderilen tek bir öğrenci modelini belirtir -->
+
+<h1>Student Details</h1>
+
+<div>
+    <h2>@Model.FirstName @Model.LastName</h2> <!-- Öğrencinin Adı ve Soyadı -->
+    <p><strong>Enrollment Date:</strong> @Model.EnrollmentDate.ToShortDateString()</p> <!-- Kayıt Tarihi -->
+    <p><strong>Advisor:</strong> @Model.Advisor.FullName</p> <!-- Öğrencinin danışmanı, Foreign Key ile bağlı -->
+</div>
+
+<a href="@Url.Action("Index", "Students")" class="btn btn-secondary">Back to List</a> <!-- Listeye dönme butonu -->
+
+    }
+}
+
