@@ -1,0 +1,16 @@
+namespace KTUBYS.ViewsAdvisors
+{
+    public class Delete
+    {
+        @model KTUBYS.Models.Advisor
+
+<h2>Danışmanı Sil</h2>
+<p>Bu danışmanı silmek istediğinize emin misiniz?</p>
+
+<form method="post">
+    <button type="submit" class="btn btn-danger">Sil</button>
+    <a href="@Url.Action("Index", "Advisors")" class="btn btn-secondary">Vazgeç</a>
+</form>
+
+    }
+}
