@@ -1,0 +1,55 @@
+namespace KTUBYS.ViewsStudents
+{
+    public class Edit
+    {
+        @model Student  <!-- Bu, view'a gönderilen öğrenci modelini belirtir -->
+
+<h1>Edit Student</h1>
+
+<!-- Form Başlangıcı -->
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()  <!-- CSRF koruması için anti-forgery token eklenir -->
+
+    <div class="form-group">
+        <label asp-for="FirstName" class="control-label"></label>  <!-- Öğrencinin Adı Etiketi -->
+        <input asp-for="FirstName" class="form-control" />  <!-- Öğrencinin Adı Girişi -->
+        <span asp-validation-for="FirstName" class="text-danger"></span>  <!-- Hata mesajı -->
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LastName" class="control-label"></label>  <!-- Öğrencinin Soyadı Etiketi -->
+        <input asp-for="LastName" class="form-control" />  <!-- Öğrencinin Soyadı Girişi -->
+        <span asp-validation-for="LastName" class="text-danger"></span>  <!-- Hata mesajı -->
+    </div>
+
+    <div class="form-group">
+        <label asp-for="EnrollmentDate" class="control-label"></label>  <!-- Kayıt Tarihi Etiketi -->
+        <input asp-for="EnrollmentDate" class="form-control" type="date" />  <!-- Kayıt Tarihi Girişi -->
+        <span asp-validation-for="EnrollmentDate" class="text-danger"></span>  <!-- Hata mesajı -->
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AdvisorID" class="control-label"></label>  <!-- Danışman Etiketi -->
+        <select asp-for="AdvisorID" class="form-control">
+            <option value="">Select Advisor</option>  <!-- Danışman Seçimi -->
+            @foreach (var advisor in ViewBag.Advisors)  <!-- Danışmanları listele -->
+            {
+                <option value="@advisor.AdvisorID" @(advisor.AdvisorID == Model.AdvisorID ? "selected" : "")>
+                    @advisor.FullName
+                </option>
+            }
+        </select>
+        <span asp-validation-for="AdvisorID" class="text-danger"></span>  <!-- Hata mesajı -->
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>  <!-- Kaydet Butonu -->
+    <a href="@Url.Action("Index", "Students")" class="btn btn-secondary">Back to List</a>  <!-- Listeye dönme Butonu -->
+</form>
+
+<!-- Validasyon ve Hata Mesajları -->
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+    }
+}
