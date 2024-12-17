@@ -1,0 +1,48 @@
+namespace KTUBYS.ViewsStudentCourseSelections
+{
+    public class Index
+    {
+        @model IEnumerable<KTUBYS.Models.StudentCourseSelection>
+
+@{
+    ViewData["Title"] = "Student Course Selections";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a href="@Url.Action("Create", "StudentCourseSelections")" class="btn btn-primary">Create New Selection</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Selection ID</th>
+            <th>Student</th>
+            <th>Course</th>
+            <th>Selection Date</th>
+            <th>Approved</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.SelectionID</td>
+                <td>@item.Student.FirstName @item.Student.LastName</td>
+                <td>@item.Course.CourseName</td>
+                <td>@item.SelectionDate.ToString("dd/MM/yyyy")</td>
+                <td>@item.IsApproved</td>
+                <td>
+                    <a href="@Url.Action("Details", "StudentCourseSelections", new { id = item.SelectionID })" class="btn btn-info">Details</a>
+                    <a href="@Url.Action("Edit", "StudentCourseSelections", new { id = item.SelectionID })" class="btn btn-warning">Edit</a>
+                    <a href="@Url.Action("Delete", "StudentCourseSelections", new { id = item.SelectionID })" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+    }
+}
