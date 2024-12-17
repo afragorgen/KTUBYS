@@ -1,0 +1,38 @@
+namespace KTUBYS.ViewsStudentCourseSelections
+{
+    public class Create
+    {
+        @model KTUBYS.Models.StudentCourseSelection
+
+@{
+    ViewData["Title"] = "Create Student Course Selection";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h4>StudentCourseSelection</h4>
+<hr />
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label asp-for="StudentID" class="control-label"></label>
+        <select asp-for="StudentID" class="form-control" asp-items="@(new SelectList(ViewBag.Students, "StudentID", "FirstName"))"></select>
+    </div>
+    <div class="form-group">
+        <label asp-for="CourseID" class="control-label"></label>
+        <select asp-for="CourseID" class="form-control" asp-items="@(new SelectList(ViewBag.Courses, "CourseID", "CourseName"))"></select>
+    </div>
+    <div class="form-group">
+        <label asp-for="SelectionDate" class="control-label"></label>
+        <input asp-for="SelectionDate" class="form-control" type="date" />
+    </div>
+    <div class="form-group">
+        <label asp-for="IsApproved" class="control-label"></label>
+        <input asp-for="IsApproved" class="form-control" type="checkbox" />
+    </div>
+    <button type="submit" class="btn btn-success">Create</button>
+    <a href="@Url.Action("Index", "StudentCourseSelections")" class="btn btn-primary">Back to List</a>
+</form>
+
+    }
+}
