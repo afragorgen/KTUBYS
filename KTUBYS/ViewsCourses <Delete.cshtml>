@@ -1,0 +1,30 @@
+namespace KTUBYS.ViewsCourses
+{
+    public class Delete
+    {
+        @model KTUBYS.Models.Course
+
+@{
+    ViewData["Title"] = "Delete Course";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h4>Are you sure you want to delete this course?</h4>
+<hr />
+<div>
+    <h3>@Model.CourseName</h3>
+    <p><strong>Course Code:</strong> @Model.CourseCode</p>
+    <p><strong>Is Mandatory:</strong> @Model.IsMandatory</p>
+    <p><strong>Credit:</strong> @Model.Credit</p>
+    <p><strong>Department:</strong> @Model.Department</p>
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="CourseID" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="@Url.Action("Index", "Courses")" class="btn btn-secondary">Cancel</a>
+</form>
+
+    }
+}
