@@ -1,0 +1,24 @@
+namespace KTUBYS.ViewsCourses
+{
+    public class Details
+    {
+        @model KTUBYS.Models.Course
+
+@{
+    ViewData["Title"] = "Course Details";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h3>@Model.CourseName</h3>
+    <p><strong>Course Code:</strong> @Model.CourseCode</p>
+    <p><strong>Is Mandatory:</strong> @Model.IsMandatory</p>
+    <p><strong>Credit:</strong> @Model.Credit</p>
+    <p><strong>Department:</strong> @Model.Department</p>
+</div>
+
+<a href="@Url.Action("Index", "Courses")" class="btn btn-primary">Back to List</a>
+
+    }
+}
