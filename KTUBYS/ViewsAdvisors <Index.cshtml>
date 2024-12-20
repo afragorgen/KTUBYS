@@ -1,38 +1,31 @@
-namespace KTUBYS.ViewsAdvisors
-{
-    public class Index
-    {
-        @model IEnumerable<KTUBYS.Models.Advisor>
+@model IEnumerable<KTUBYS.Models.Advisor>
 
-<h2>Danışmanlar Listesi</h2>
+<h1>Advisor List</h1>
+
 <table class="table">
     <thead>
         <tr>
-            <th>Unvan</th>
-            <th>Adı Soyadı</th>
-            <th>Departman</th>
-            <th>Email</th>
-            <th>İşlemler</th>
+            <th>Full Name</th>
+            <th>Title</th>
+            <th>Department</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var advisor in Model)
         {
             <tr>
-                <td>@advisor.Title</td>
                 <td>@advisor.Fullname</td>
+                <td>@advisor.Title</td>
                 <td>@advisor.Department</td>
-                <td>@advisor.Email</td>
                 <td>
-                    <a href="@Url.Action("Details", "Advisors", new { id = advisor.AdvisorID })" class="btn btn-info">Detaylar</a>
-                    <a href="@Url.Action("Edit", "Advisors", new { id = advisor.AdvisorID })" class="btn btn-warning">Düzenle</a>
-                    <a href="@Url.Action("Delete", "Advisors", new { id = advisor.AdvisorID })" class="btn btn-danger">Sil</a>
+                    <a href="@Url.Action("Details", "Advisors", new { id = advisor.AdvisorID })" class="btn btn-info">Details</a>
+                    <a href="@Url.Action("Edit", "Advisors", new { id = advisor.AdvisorID })" class="btn btn-warning">Edit</a>
+                    <a href="@Url.Action("Delete", "Advisors", new { id = advisor.AdvisorID })" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-<a href="@Url.Action("Create", "Advisors")" class="btn btn-success">Yeni Danışman Ekle</a>
 
-    }
-}
+<a href="@Url.Action("Create", "Advisors")" class="btn btn-primary">Add New Advisor</a>
