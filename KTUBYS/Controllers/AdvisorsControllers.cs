@@ -1,127 +1,87 @@
-using Microsoft.AspNetCore.Mvc;
-using KTUBYS.Data;
-using KTUBYS.Models;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace KTUBYS.Controllers
+// API Controller: AdvisorsController
+[Route("api/[controller]")]
+[ApiController]
+public class AdvisorsController : ControllerBase
 {
-    public class AdvisorsController : Controller
+    private readonly KTUBYSContext _context;
+
+    public AdvisorsController(KTUBYSContext context)
     {
-        private readonly KTUBYSContext _context;
+        _context = context;
+    }
 
-        public AdvisorsController(KTUBYSContext context)
+    // Tüm Danışmanları Al (GET api/advisors)
+    [HttpGet]
+    public IActionResult GetAllAdvisors()
+    {
+        var advisors = _context.Advisors.ToList();
+        return Ok(advisors); // JSON olarak döner
+    }
+
+    // Belirli bir Danışmanı Al (GET api/advisors/{id})
+    [HttpGet("{id}")]
+    public IActionResult GetAdvisorById(int id)
+    {
+        var advisor = _context.Advisors.FirstOrDefault(a => a.AdvisorID == id);
+        if (advisor == null)
         {
-            _context = context;
+            return NotFound();
+        }
+        return Ok(advisor); // JSON olarak döner
+    }
+
+    // Yeni Danışman Ekle (POST api/advisors)
+    [HttpPost]
+    public IActionResult CreateAdvisor([FromBody] Advisor advisor)
+    {
+        if (advisor == null)
+        {
+            return BadRequest();
         }
 
-        // GET: /Advisors/
-        public async Task<IActionResult> Index()
+        _context.Advisors.Add(advisor);
+        _context.SaveChanges();
+        return CreatedAtAction(nameof(GetAdvisorById), new { id = advisor.AdvisorID }, advisor);
+    }
+
+    // Danışmanı Güncelle (PUT api/advisors/{id})
+    [HttpPut("{id}")]
+    public IActionResult UpdateAdvisor(int id, [FromBody] Advisor advisor)
+    {
+        if (id != advisor.AdvisorID)
         {
-            var advisors = await _context.Advisors.ToListAsync();
-            return View(advisors);
+            return BadRequest();
         }
 
-        // GET: /Advisors/Details/5
-        public async Task<IActionResult> Details(int? id)
+        var existingAdvisor = _context.Advisors.Find(id);
+        if (existingAdvisor == null)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var advisor = await _context.Advisors
-                .FirstOrDefaultAsync(m => m.AdvisorID == id);
-            if (advisor == null)
-            {
-                return NotFound();
-            }
-
-            return View(advisor);
+            return NotFound();
         }
 
-        // GET: /Advisors/Create
-        public IActionResult Create()
+        existingAdvisor.Fullname = advisor.Fullname;
+        existingAdvisor.Title = advisor.Title;
+        existingAdvisor.Department = advisor.Department;
+        existingAdvisor.Email = advisor.Email;
+
+        _context.Advisors.Update(existingAdvisor);
+        _context.SaveChanges();
+        return NoContent(); // Güncellenmiş danışman verisi döndürülmeden başarılı bir yanıt döner
+    }
+
+    // Danışmanı Sil (DELETE api/advisors/{id})
+    [HttpDelete("{id}")]
+    public IActionResult DeleteAdvisor(int id)
+    {
+        var advisor = _context.Advisors.Find(id);
+        if (advisor == null)
         {
-            return View();
+            return NotFound();
         }
 
-        // POST: /Advisors/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AdvisorID,Fullname,Title,Department,Email")] Advisor advisor)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(advisor);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(advisor);
-        }
-
-        // GET: /Advisors/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var advisor = await _context.Advisors.FindAsync(id);
-            if (advisor == null)
-            {
-                return NotFound();
-            }
-            return View(advisor);
-        }
-
-        // POST: /Advisors/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AdvisorID,Fullname,Title,Department,Email")] Advisor advisor)
-        {
-            if (id != advisor.AdvisorID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                _context.Update(advisor);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(advisor);
-        }
-
-        // GET: /Advisors/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var advisor = await _context.Advisors
-                .FirstOrDefaultAsync(m => m.AdvisorID == id);
-            if (advisor == null)
-            {
-                return NotFound();
-            }
-
-            return View(advisor);
-        }
-
-        // POST: /Advisors/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var advisor = await _context.Advisors.FindAsync(id);
-            _context.Advisors.Remove(advisor);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        _context.Advisors.Remove(advisor);
+        _context.SaveChanges();
+        return NoContent(); // Silme işlemi başarılı
     }
 }
+
