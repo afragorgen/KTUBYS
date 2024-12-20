@@ -1,46 +1,29 @@
-namespace KTUBYS.VİewsUsers
-{
-    public class Edit
-    {
-        @model KTUBYS.Models.User
+@model IEnumerable<KTUBYS.Models.User>
 
-@{
-    ViewData["Title"] = "Edit User";
-}
+<h1>User List</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Username</td>
+                <td>@user.Role</td>
+                <td>
+                    <a href="@Url.Action("Details", "Users", new { id = user.UserID })" class="btn btn-info">Details</a>
+                    <a href="@Url.Action("Edit", "Users", new { id = user.UserID })" class="btn btn-warning">Edit</a>
+                    <a href="@Url.Action("Delete", "Users", new { id = user.UserID })" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
-<h1>Edit User</h1>
+<a href="@Url.Action("Create", "Users")" class="btn btn-primary">Add New User</a>
 
-<form asp-action="Edit" method="post">
-    <div class="form-group">
-        <label asp-for="UserID" class="control-label"></label>
-        <input asp-for="UserID" class="form-control" readonly />
-        <span asp-validation-for="UserID" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="FullName" class="control-label"></label>
-        <input asp-for="FullName" class="form-control" />
-        <span asp-validation-for="FullName" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Email" class="control-label"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Role" class="control-label"></label>
-        <select asp-for="Role" class="form-control">
-            <option value="Admin">Admin</option>
-            <option value="User">User</option>
-        </select>
-        <span asp-validation-for="Role" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <input type="submit" value="Save Changes" class="btn btn-primary" />
-    </div>
-</form>
-
-<a href="@Url.Action("Index")" class="btn btn-primary">Back to List</a>
-
-    }
-}
