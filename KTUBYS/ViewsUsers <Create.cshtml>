@@ -1,41 +1,32 @@
-namespace KTUBYS.VİewsUsers
-{
-    public class Create
-    {
-        @model KTUBYS.Models.User
-
-@{
-    ViewData["Title"] = "Create User";
-}
+@model KTUBYS.Models.User
 
 <h1>Create New User</h1>
 
-<form asp-action="Create" method="post">
+<form method="post">
     <div class="form-group">
-        <label asp-for="FullName" class="control-label"></label>
-        <input asp-for="FullName" class="form-control" />
-        <span asp-validation-for="FullName" class="text-danger"></span>
+        <label for="Username">Username</label>
+        <input type="text" class="form-control" id="Username" name="Username" value="@Model.Username" required />
     </div>
+    
     <div class="form-group">
-        <label asp-for="Email" class="control-label"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+        <label for="PasswordHash">Password</label>
+        <input type="password" class="form-control" id="PasswordHash" name="PasswordHash" required />
     </div>
+
     <div class="form-group">
-        <label asp-for="Role" class="control-label"></label>
-        <select asp-for="Role" class="form-control">
-            <option value="Admin">Admin</option>
-            <option value="User">User</option>
+        <label for="Role">Role</label>
+        <select class="form-control" id="Role" name="Role" required>
+            <option value="Admin" @(Model.Role == "Admin" ? "selected" : "")>Admin</option>
+            <option value="Advisor" @(Model.Role == "Advisor" ? "selected" : "")>Advisor</option>
+            <option value="Student" @(Model.Role == "Student" ? "selected" : "")>Student</option>
         </select>
-        <span asp-validation-for="Role" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
+        <label for="RelatedID">Related ID</label>
+        <input type="number" class="form-control" id="RelatedID" name="RelatedID" value="@Model.RelatedID" required />
     </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a href="@Url.Action("Index", "Users")" class="btn btn-secondary">Cancel</a>
 </form>
-
-<a href="@Url.Action("Index")" class="btn btn-primary">Back to List</a>
-
-    }
-}
