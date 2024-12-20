@@ -1,48 +1,33 @@
-namespace KTUBYS.ViewsCourses
-{
-    public class Index
-    {
-        @model IEnumerable<KTUBYS.Models.Course>
+@model IEnumerable<KTUBYS.Models.Course>
 
-@{
-    ViewData["Title"] = "Courses List";
-}
-
-<h1>@ViewData["Title"]</h1>
-
-<p>
-    <a href="@Url.Action("Create", "Courses")" class="btn btn-primary">Create New Course</a>
-</p>
+<h1>Course List</h1>
 
 <table class="table">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.CourseCode)</th>
-            <th>@Html.DisplayNameFor(model => model.CourseName)</th>
-            <th>@Html.DisplayNameFor(model => model.IsMandatory)</th>
-            <th>@Html.DisplayNameFor(model => model.Credit)</th>
-            <th>@Html.DisplayNameFor(model => model.Department)</th>
-            <th></th>
+            <th>Course Name</th>
+            <th>Course Code</th>
+            <th>Is Mandatory</th>
+            <th>Credit</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var course in Model)
         {
             <tr>
-                <td>@item.CourseCode</td>
-                <td>@item.CourseName</td>
-                <td>@item.IsMandatory</td>
-                <td>@item.Credit</td>
-                <td>@item.Department</td>
+                <td>@course.CourseName</td>
+                <td>@course.CourseCode</td>
+                <td>@course.IsMandatory</td>
+                <td>@course.Credit</td>
                 <td>
-                    <a href="@Url.Action("Edit", "Courses", new { id = item.CourseID })" class="btn btn-warning">Edit</a> |
-                    <a href="@Url.Action("Details", "Courses", new { id = item.CourseID })" class="btn btn-info">Details</a> |
-                    <a href="@Url.Action("Delete", "Courses", new { id = item.CourseID })" class="btn btn-danger">Delete</a>
+                    <a href="@Url.Action("Details", "Courses", new { id = course.CourseID })" class="btn btn-info">Details</a>
+                    <a href="@Url.Action("Edit", "Courses", new { id = course.CourseID })" class="btn btn-warning">Edit</a>
+                    <a href="@Url.Action("Delete", "Courses", new { id = course.CourseID })" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-    }
-}
+<a href="@Url.Action("Create", "Courses")" class="btn btn-primary">Add New Course</a>
