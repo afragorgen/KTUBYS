@@ -1,168 +1,93 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using KTUBYS.Data;
-using KTUBYS.Models;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace KTUBYS.Controllers
+// API Controller: StudentCourseSelectionsController
+[Route("api/[controller]")]
+[ApiController]
+public class StudentCourseSelectionsController : ControllerBase
 {
-    public class StudentCourseSelectionsController : Controller
+    private readonly KTUBYSContext _context;
+
+    public StudentCourseSelectionsController(KTUBYSContext context)
     {
-        private readonly KTUBYSContext _context;
+        _context = context;
+    }
 
-        // Constructor: Context sınıfını enjekte eder
-        public StudentCourseSelectionsController(KTUBYSContext context)
+    // Tüm Öğrenci-Kurs Seçimlerini Al (GET api/studentcourseselections)
+    [HttpGet]
+    public IActionResult GetAllStudentCourseSelections()
+    {
+        var selections = _context.StudentCourseSelections
+                                  .Include(scs => scs.Student)
+                                  .Include(scs => scs.Course)
+                                  .ToList();
+        return Ok(selections); // JSON olarak döner
+    }
+
+    // Belirli bir Öğrenci-Kurs Seçimini Al (GET api/studentcourseselections/{id})
+    [HttpGet("{id}")]
+    public IActionResult GetStudentCourseSelectionById(int id)
+    {
+        var selection = _context.StudentCourseSelections
+                                 .Include(scs => scs.Student)
+                                 .Include(scs => scs.Course)
+                                 .FirstOrDefault(scs => scs.SelectionID == id);
+        if (selection == null)
         {
-            _context = context;
+            return NotFound();
+        }
+        return Ok(selection); // JSON olarak döner
+    }
+
+    // Yeni Öğrenci-Kurs Seçimi Ekle (POST api/studentcourseselections)
+    [HttpPost]
+    public IActionResult CreateStudentCourseSelection([FromBody] StudentCourseSelection selection)
+    {
+        if (selection == null)
+        {
+            return BadRequest();
         }
 
-        // GET: /StudentCourseSelections
-        public async Task<IActionResult> Index()
-        {
-            var selections = await _context.StudentCourseSelections
-                .Include(scs => scs.Student)
-                .Include(scs => scs.Course)
-                .ToListAsync();
+        _context.StudentCourseSelections.Add(selection);
+        _context.SaveChanges();
+        return CreatedAtAction(nameof(GetStudentCourseSelectionById), new { id = selection.SelectionID }, selection);
+    }
 
-            return View(selections);
+    // Öğrenci-Kurs Seçimini Güncelle (PUT api/studentcourseselections/{id})
+    [HttpPut("{id}")]
+    public IActionResult UpdateStudentCourseSelection(int id, [FromBody] StudentCourseSelection selection)
+    {
+        if (id != selection.SelectionID)
+        {
+            return BadRequest();
         }
 
-        // GET: /StudentCourseSelections/Details/5
-        public async Task<IActionResult> Details(int? id)
+        var existingSelection = _context.StudentCourseSelections.Find(id);
+        if (existingSelection == null)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var selection = await _context.StudentCourseSelections
-                .Include(scs => scs.Student)
-                .Include(scs => scs.Course)
-                .FirstOrDefaultAsync(m => m.SelectionID == id);
-
-            if (selection == null)
-            {
-                return NotFound();
-            }
-
-            return View(selection);
+            return NotFound();
         }
 
-        // GET: /StudentCourseSelections/Create
-        public IActionResult Create()
+        existingSelection.StudentID = selection.StudentID;
+        existingSelection.CourseID = selection.CourseID;
+        existingSelection.SelectionDate = selection.SelectionDate;
+        existingSelection.IsApproved = selection.IsApproved;
+
+        _context.StudentCourseSelections.Update(existingSelection);
+        _context.SaveChanges();
+        return NoContent(); // Güncellenmiş veri döndürülmeden başarılı bir yanıt döner
+    }
+
+    // Öğrenci-Kurs Seçimini Sil (DELETE api/studentcourseselections/{id})
+    [HttpDelete("{id}")]
+    public IActionResult DeleteStudentCourseSelection(int id)
+    {
+        var selection = _context.StudentCourseSelections.Find(id);
+        if (selection == null)
         {
-            ViewBag.Students = _context.Students.ToList();
-            ViewBag.Courses = _context.Courses.ToList();
-            return View();
+            return NotFound();
         }
 
-        // POST: /StudentCourseSelections/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SelectionID,StudentID,CourseID,SelectionDate,IsApproved")] StudentCourseSelection selection)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(selection);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewBag.Students = _context.Students.ToList();
-            ViewBag.Courses = _context.Courses.ToList();
-            return View(selection);
-        }
-
-        // GET: /StudentCourseSelections/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var selection = await _context.StudentCourseSelections.FindAsync(id);
-            if (selection == null)
-            {
-                return NotFound();
-            }
-
-            ViewBag.Students = _context.Students.ToList();
-            ViewBag.Courses = _context.Courses.ToList();
-            return View(selection);
-        }
-
-        // POST: /StudentCourseSelections/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SelectionID,StudentID,CourseID,SelectionDate,IsApproved")] StudentCourseSelection selection)
-        {
-            if (id != selection.SelectionID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(selection);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StudentCourseSelectionExists(selection.SelectionID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewBag.Students = _context.Students.ToList();
-            ViewBag.Courses = _context.Courses.ToList();
-            return View(selection);
-        }
-
-        // GET: /StudentCourseSelections/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var selection = await _context.StudentCourseSelections
-                .Include(scs => scs.Student)
-                .Include(scs => scs.Course)
-                .FirstOrDefaultAsync(m => m.SelectionID == id);
-
-            if (selection == null)
-            {
-                return NotFound();
-            }
-
-            return View(selection);
-        }
-
-        // POST: /StudentCourseSelections/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var selection = await _context.StudentCourseSelections.FindAsync(id);
-            _context.StudentCourseSelections.Remove(selection);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool StudentCourseSelectionExists(int id)
-        {
-            return _context.StudentCourseSelections.Any(e => e.SelectionID == id);
-        }
+        _context.StudentCourseSelections.Remove(selection);
+        _context.SaveChanges();
+        return NoContent(); // Silme işlemi başarılı
     }
 }
 
