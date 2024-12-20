@@ -1,16 +1,15 @@
-namespace KTUBYS.ViewsAdvisors
-{
-    public class Delete
-    {
-        @model KTUBYS.Models.Advisor
+@model KTUBYS.Models.Advisor
 
-<h2>Danışmanı Sil</h2>
-<p>Bu danışmanı silmek istediğinize emin misiniz?</p>
+<h1>Delete Advisor</h1>
 
-<form method="post">
-    <button type="submit" class="btn btn-danger">Sil</button>
-    <a href="@Url.Action("Index", "Advisors")" class="btn btn-secondary">Vazgeç</a>
+<p>Are you sure you want to delete this advisor?</p>
+<p>Full Name: @Model.Fullname</p>
+<p>Title: @Model.Title</p>
+<p>Department: @Model.Department</p>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="AdvisorID" />
+    <button type="submit" class="btn btn-danger">Delete</button>
 </form>
 
-    }
-}
+<a href="@Url.Action("Index", "Advisors")" class="btn btn-secondary">Cancel</a>
