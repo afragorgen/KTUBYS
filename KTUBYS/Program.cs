@@ -1,40 +1,34 @@
 using Microsoft.EntityFrameworkCore;
 using KTUBYS;  // Context ve diğer gerekli namespace'ler
-
-var builder = WebApplication.CreateBuilder(args);
-
-// 1. Servislerin eklenmesi
-builder.Services.AddControllers(); // API Controller'larını kullanabilmek için
-builder.Services.AddEndpointsApiExplorer(); // API'ler için
-builder.Services.AddSwaggerGen(); // Swagger dokümantasyonu için
-
-// 2. Veritabanı bağlantısı (SQL Server kullanıyorsanız)
-builder.Services.AddDbContext<KTUBYSContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("KTUBYSContext")));
-
-// 3. Uygulama ayarları
-var app = builder.Build();
-
-// 4. Middleware (Ara katmanlar) eklemeleri
-if (app.Environment.IsDevelopment())
+public class Program
 {
-    // Geliştirme ortamında Swagger dokümantasyonu ve UI
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+
+        // Swagger servisini ekleyin
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
+        // Diğer servisleri eklemeye devam edin
+        builder.Services.AddDbContext<KTUBYSContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("KTUBYSContext")));
+        builder.Services.AddControllers();
+
+        var app = builder.Build();
+
+        // Swagger'ı etkinleştirin
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();  // Swagger'ı etkinleştirin
+            app.UseSwaggerUI();  // Swagger UI'yi etkinleştirin
+        }
+
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        app.Run();
+    }
 }
-else
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
-
-// 5. API Controller'larını yönlendirme
-app.MapControllers(); // API controller'larını haritalandırma
-
-app.Run();
-
 
