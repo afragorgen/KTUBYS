@@ -1,26 +1,26 @@
-using KTUBYS.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+using KTUBYS;  // Context ve diğer gerekli namespace'ler
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();  // MVC için controller ve view desteği ekleniyor
-builder.Services.AddControllers();  // API desteği ekleniyor
+// 1. Servislerin eklenmesi
+builder.Services.AddControllers(); // API Controller'larını kullanabilmek için
+builder.Services.AddEndpointsApiExplorer(); // API'ler için
+builder.Services.AddSwaggerGen(); // Swagger dokümantasyonu için
 
-// Veritabanı bağlantısı için DbContext'i yapılandırıyoruz
+// 2. Veritabanı bağlantısı (SQL Server kullanıyorsanız)
 builder.Services.AddDbContext<KTUBYSContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("KTUBYSContext") ?? throw new InvalidOperationException("Connection string 'KTUBYSContext' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("KTUBYSContext")));
 
+// 3. Uygulama ayarları
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// 4. Middleware (Ara katmanlar) eklemeleri
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
+    // Geliştirme ortamında Swagger dokümantasyonu ve UI
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else
 {
@@ -30,20 +30,10 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
-// MVC ve API istekleri için gerekli middleware'leri ekliyoruz.
-app.UseEndpoints(endpoints =>
-{
-    // MVC Endpoints (View rendering)
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
-
-    // API Endpoints
-    endpoints.MapControllers();  // API controller'ları için
-});
+// 5. API Controller'larını yönlendirme
+app.MapControllers(); // API controller'larını haritalandırma
 
 app.Run();
 
