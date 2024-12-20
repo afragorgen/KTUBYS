@@ -1,26 +1,9 @@
-namespace KTUBYS.ViewsAdvisors
-{
-    public class Details
-    {
-        @model KTUBYS.Models.Advisor
+@model KTUBYS.Models.Advisor
 
-<h2>Danışman Detayları</h2>
+<h1>Advisor Details</h1>
 
-<div>
-    <strong>Adı Soyadı:</strong> @Model.Fullname
-</div>
-<div>
-    <strong>Unvan:</strong> @Model.Title
-</div>
-<div>
-    <strong>Departman:</strong> @Model.Department
-</div>
-<div>
-    <strong>Email:</strong> @Model.Email
-</div>
+<p>Full Name: @Model.Fullname</p>
+<p>Title: @Model.Title</p>
+<p>Department: @Model.Department</p>
 
-<a href="@Url.Action("Edit", "Advisors", new { id = Model.AdvisorID })" class="btn btn-warning">Düzenle</a>
-<a href="@Url.Action("Index", "Advisors")" class="btn btn-secondary">Geri Dön</a>
-
-    }
-}
+<a href="@Url.Action("Index", "Advisors")" class="btn btn-primary">Back to List</a>
