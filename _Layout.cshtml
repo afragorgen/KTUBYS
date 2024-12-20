@@ -1,0 +1,38 @@
+@page
+@model KTUBYS._LayoutModel
+@{
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>@ViewData["Title"] - KTUBYS</title>
+        <link rel="stylesheet" href="~/css/site.css">
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>KTUBYS - School Management System</h1>
+                <nav>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/Students">Students</a></li>
+                        <li><a href="/Courses">Courses</a></li>
+                        <li><a href="/Advisors">Advisors</a></li>
+                    </ul>
+                </nav>
+            </header>
+
+            <section>
+                @RenderBody()  <!-- Sayfaya özel içerik buraya gelecek -->
+            </section>
+
+            <footer>
+                <p>&copy; 2024 - KTUBYS School Management System</p>
+            </footer>
+        </div>
+    </body>
+    </html>
+
+}
+
