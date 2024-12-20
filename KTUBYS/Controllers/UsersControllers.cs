@@ -1,150 +1,86 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using KTUBYS.Data;
-using KTUBYS.Models;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace KTUBYS.Controllers
+// API Controller: UsersController
+[Route("api/[controller]")]
+[ApiController]
+public class UsersController : ControllerBase
 {
-    public class UsersController : Controller
+    private readonly KTUBYSContext _context;
+
+    public UsersController(KTUBYSContext context)
     {
-        private readonly KTUBYSContext _context;
+        _context = context;
+    }
 
-        public UsersController(KTUBYSContext context)
+    // Tüm Kullanıcıları Al (GET api/users)
+    [HttpGet]
+    public IActionResult GetAllUsers()
+    {
+        var users = _context.Users.ToList();
+        return Ok(users); // JSON olarak döner
+    }
+
+    // Belirli bir Kullanıcıyı Al (GET api/users/{id})
+    [HttpGet("{id}")]
+    public IActionResult GetUserById(int id)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.UserID == id);
+        if (user == null)
         {
-            _context = context;
+            return NotFound();
+        }
+        return Ok(user); // JSON olarak döner
+    }
+
+    // Yeni Kullanıcı Ekle (POST api/users)
+    [HttpPost]
+    public IActionResult CreateUser([FromBody] User user)
+    {
+        if (user == null)
+        {
+            return BadRequest();
         }
 
-        // GET: Users
-        public async Task<IActionResult> Index()
+        _context.Users.Add(user);
+        _context.SaveChanges();
+        return CreatedAtAction(nameof(GetUserById), new { id = user.UserID }, user);
+    }
+
+    // Kullanıcıyı Güncelle (PUT api/users/{id})
+    [HttpPut("{id}")]
+    public IActionResult UpdateUser(int id, [FromBody] User user)
+    {
+        if (id != user.UserID)
         {
-            var users = await _context.Users.ToListAsync();  // Tüm kullanıcıları alıyoruz
-            return View(users);  // Kullanıcıları view'a gönderiyoruz
+            return BadRequest();
         }
 
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
+        var existingUser = _context.Users.Find(id);
+        if (existingUser == null)
         {
-            if (id == null)
-            {
-                return NotFound();  // Eğer id geçerli değilse NotFound döndürüyoruz
-            }
-
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.UserID == id);  // Veritabanından kullanıcıyı buluyoruz
-
-            if (user == null)
-            {
-                return NotFound();  // Kullanıcı bulunamazsa NotFound döndürüyoruz
-            }
-
-            return View(user);  // Kullanıcıyı detaylar için view'a gönderiyoruz
+            return NotFound();
         }
 
-        // GET: Users/Create
-        public IActionResult Create()
+        existingUser.Username = user.Username;
+        existingUser.Password = user.Password;
+        existingUser.Email = user.Email;
+        existingUser.Role = user.Role;
+
+        _context.Users.Update(existingUser);
+        _context.SaveChanges();
+        return NoContent(); // Güncellenmiş veri döndürülmeden başarılı bir yanıt döner
+    }
+
+    // Kullanıcıyı Sil (DELETE api/users/{id})
+    [HttpDelete("{id}")]
+    public IActionResult DeleteUser(int id)
+    {
+        var user = _context.Users.Find(id);
+        if (user == null)
         {
-            return View();  // Yeni kullanıcı eklemek için formu döndürüyoruz
+            return NotFound();
         }
 
-        // POST: Users/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserID,FullName,Email,Role")] User user)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(user);  // Yeni kullanıcıyı veritabanına ekliyoruz
-                await _context.SaveChangesAsync();  // Veritabanına kaydediyoruz
-                return RedirectToAction(nameof(Index));  // Kullanıcı başarılı bir şekilde eklenirse ana listeye yönlendiriyoruz
-            }
-            return View(user);  // Model geçersizse formu tekrar gösteriyoruz
-        }
-
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();  // Eğer id geçerli değilse NotFound döndürüyoruz
-            }
-
-            var user = await _context.Users.FindAsync(id);  // Veritabanında kullanıcıyı buluyoruz
-
-            if (user == null)
-            {
-                return NotFound();  // Kullanıcı bulunamazsa NotFound döndürüyoruz
-            }
-            return View(user);  // Kullanıcıyı düzenleme formuna gönderiyoruz
-        }
-
-        // POST: Users/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserID,FullName,Email,Role")] User user)
-        {
-            if (id != user.UserID)
-            {
-                return NotFound();  // Eğer id eşleşmezse NotFound döndürüyoruz
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(user);  // Kullanıcıyı güncelliyoruz
-                    await _context.SaveChangesAsync();  // Değişiklikleri kaydediyoruz
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.UserID))
-                    {
-                        return NotFound();  // Kullanıcı bulunamazsa NotFound döndürüyoruz
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));  // Başarılı olursa listeye geri dönüyoruz
-            }
-            return View(user);  // Model geçersizse formu tekrar gösteriyoruz
-        }
-
-        // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();  // Eğer id geçerli değilse NotFound döndürüyoruz
-            }
-
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.UserID == id);  // Kullanıcıyı veritabanından buluyoruz
-
-            if (user == null)
-            {
-                return NotFound();  // Kullanıcı bulunamazsa NotFound döndürüyoruz
-            }
-
-            return View(user);  // Kullanıcıyı silme onayı için view'a gönderiyoruz
-        }
-
-        // POST: Users/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var user = await _context.Users.FindAsync(id);  // Silinecek kullanıcıyı veritabanından buluyoruz
-            _context.Users.Remove(user);  // Kullanıcıyı veritabanından siliyoruz
-            await _context.SaveChangesAsync();  // Değişiklikleri kaydediyoruz
-            return RedirectToAction(nameof(Index));  // Silme işlemi tamamlandıktan sonra listeye yönlendiriyoruz
-        }
-
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.UserID == id);  // Kullanıcının var olup olmadığını kontrol ediyoruz
-        }
+        _context.Users.Remove(user);
+        _context.SaveChanges();
+        return NoContent(); // Silme işlemi başarılı
     }
 }
