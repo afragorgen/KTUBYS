@@ -1,46 +1,19 @@
-namespace KTUBYS.VİewsUsers
-{
-    public class Edit
-    {
-        @model KTUBYS.Models.User
-
-@{
-    ViewData["Title"] = "Edit User";
-}
+@model KTUBYS.Models.User
 
 <h1>Edit User</h1>
 
 <form asp-action="Edit" method="post">
     <div class="form-group">
-        <label asp-for="UserID" class="control-label"></label>
-        <input asp-for="UserID" class="form-control" readonly />
-        <span asp-validation-for="UserID" class="text-danger"></span>
+        <label for="Username">Username</label>
+        <input type="text" class="form-control" id="Username" name="Username" value="@Model.Username" required />
     </div>
     <div class="form-group">
-        <label asp-for="FullName" class="control-label"></label>
-        <input asp-for="FullName" class="form-control" />
-        <span asp-validation-for="FullName" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Email" class="control-label"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Role" class="control-label"></label>
-        <select asp-for="Role" class="form-control">
-            <option value="Admin">Admin</option>
-            <option value="User">User</option>
+        <label for="Role">Role</label>
+        <select class="form-control" id="Role" name="Role">
+            <option value="Admin" @(Model.Role == "Admin" ? "selected" : "")>Admin</option>
+            <option value="User" @(Model.Role == "User" ? "selected" : "")>User</option>
         </select>
-        <span asp-validation-for="Role" class="text-danger"></span>
     </div>
-
-    <div class="form-group">
-        <input type="submit" value="Save Changes" class="btn btn-primary" />
-    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a href="@Url.Action("Index", "Users")" class="btn btn-secondary">Cancel</a>
 </form>
-
-<a href="@Url.Action("Index")" class="btn btn-primary">Back to List</a>
-
-    }
-}
