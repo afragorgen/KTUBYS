@@ -1,30 +1,22 @@
-namespace KTUBYS.ViewsAdvisors
-{
-    public class Edit
-    {
-        @model KTUBYS.Models.Advisor
+@model KTUBYS.Models.Advisor
 
-<h2>Danışman Düzenle</h2>
+<h1>Edit Advisor</h1>
 
-<form method="post">
+<form asp-action="Edit">
+    <input type="hidden" asp-for="AdvisorID" />
     <div class="form-group">
-        <label for="Fullname">Adı Soyadı</label>
-        <input type="text" class="form-control" id="Fullname" name="Fullname" value="@Model.Fullname" required />
+        <label>Full Name</label>
+        <input asp-for="Fullname" class="form-control" />
     </div>
     <div class="form-group">
-        <label for="Title">Unvan</label>
-        <input type="text" class="form-control" id="Title" name="Title" value="@Model.Title" required />
+        <label>Title</label>
+        <input asp-for="Title" class="form-control" />
     </div>
     <div class="form-group">
-        <label for="Department">Departman</label>
-        <input type="text" class="form-control" id="Department" name="Department" value="@Model.Department" required />
+        <label>Department</label>
+        <input asp-for="Department" class="form-control" />
     </div>
-    <div class="form-group">
-        <label for="Email">Email</label>
-        <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required />
-    </div>
-    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <button type="submit" class="btn btn-primary">Save</button>
 </form>
 
-    }
-}
+<a href="@Url.Action("Index", "Advisors")" class="btn btn-secondary">Back to List</a>
