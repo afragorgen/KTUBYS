@@ -1,48 +1,39 @@
-namespace KTUBYS.ViewsStudentCourseSelections
-{
-    public class Index
-    {
-        @model IEnumerable<KTUBYS.Models.StudentCourseSelection>
+@model IEnumerable<KTUBYS.Models.Student>
+<!-- View'a gönderilen veri tipi: IEnumerable<Student> -->
 
-@{
-    ViewData["Title"] = "Student Course Selections";
-}
-
-<h1>@ViewData["Title"]</h1>
-
-<p>
-    <a href="@Url.Action("Create", "StudentCourseSelections")" class="btn btn-primary">Create New Selection</a>
-</p>
+<h1>Student List</h1>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Selection ID</th>
-            <th>Student</th>
-            <th>Course</th>
-            <th>Selection Date</th>
-            <th>Approved</th>
-            <th>Actions</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Enrollment Date</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var student in Model)
         {
             <tr>
-                <td>@item.SelectionID</td>
-                <td>@item.Student.FirstName @item.Student.LastName</td>
-                <td>@item.Course.CourseName</td>
-                <td>@item.SelectionDate.ToString("dd/MM/yyyy")</td>
-                <td>@item.IsApproved</td>
+                <td>@student.FirstName</td>
+                <td>@student.LastName</td>
+                <td>@student.EnrollmentDate.ToShortDateString()</td>
                 <td>
-                    <a href="@Url.Action("Details", "StudentCourseSelections", new { id = item.SelectionID })" class="btn btn-info">Details</a>
-                    <a href="@Url.Action("Edit", "StudentCourseSelections", new { id = item.SelectionID })" class="btn btn-warning">Edit</a>
-                    <a href="@Url.Action("Delete", "StudentCourseSelections", new { id = item.SelectionID })" class="btn btn-danger">Delete</a>
+                    <!-- Details sayfasına yönlendiren link -->
+                    <a href="@Url.Action("Details", "Students", new { id = student.StudentID })" class="btn btn-info">Details</a>
+                    
+                    <!-- Edit sayfasına yönlendiren link -->
+                    <a href="@Url.Action("Edit", "Students", new { id = student.StudentID })" class="btn btn-warning">Edit</a>
+                    
+                    <!-- Delete sayfasına yönlendiren link -->
+                    <a href="@Url.Action("Delete", "Students", new { id = student.StudentID })" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-    }
-}
+<!-- Yeni öğrenci eklemek için bir link -->
+<a href="@Url.Action("Create", "Students")" class="btn btn-primary">Add New Student</a>
+
