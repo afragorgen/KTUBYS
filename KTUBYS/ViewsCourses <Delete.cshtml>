@@ -14,4 +14,3 @@
 </form>
 
 <a href="@Url.Action("Index", "Courses")" class="btn btn-secondary">Cancel</a>
-
