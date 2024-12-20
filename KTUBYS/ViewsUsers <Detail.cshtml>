@@ -1,34 +1,16 @@
-namespace KTUBYS.VİewsUsers
-{
-    public class Detail
-    {
-        @model KTUBYS.Models.User
-
-@{
-    ViewData["Title"] = "User Details";
-}
+@model KTUBYS.Models.User
 
 <h1>User Details</h1>
 
-<div>
-    <h4>User</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">User ID</dt>
-        <dd class="col-sm-10">@Model.UserID</dd>
-
-        <dt class="col-sm-2">Full Name</dt>
-        <dd class="col-sm-10">@Model.FullName</dd>
-
-        <dt class="col-sm-2">Email</dt>
-        <dd class="col-sm-10">@Model.Email</dd>
-
-        <dt class="col-sm-2">Role</dt>
-        <dd class="col-sm-10">@Model.Role</dd>
-    </dl>
+<div class="form-group">
+    <label for="Username">Username</label>
+    <input type="text" class="form-control" id="Username" value="@Model.Username" readonly />
+</div>
+<div class="form-group">
+    <label for="Role">Role</label>
+    <input type="text" class="form-control" id="Role" value="@Model.Role" readonly />
 </div>
 
-<a href="@Url.Action("Index")" class="btn btn-primary">Back to List</a>
+<a href="@Url.Action("Edit", "Users", new { id = Model.UserID })" class="btn btn-primary">Edit</a>
+<a href="@Url.Action("Index", "Users")" class="btn btn-secondary">Back to List</a>
 
-    }
-}
